@@ -1,69 +1,9 @@
-<?php
-require_once 'C:\xampp\htdocs\GreenStartConnect\Controller\eventC.php';
-
-// Initialize variables
-$mode = 'add'; // Default mode is "add"
-$eventId = null;
-$event = null;
-
-// Check if an event ID is provided for editing
-if (isset($_GET['id'])) {
-    $eventId = intval($_GET['id']);
-    $event = EventController::getEventById($eventId);
-    if ($event) {
-        $mode = 'edit';
-    } else {
-        die('Événement non trouvé.');
-    }
-}
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = [
-        'titre_event' => trim($_POST['titre_event']),
-        'description_event' => trim($_POST['description_event']),
-        'localisation' => trim($_POST['localisation']),
-        'date_debut' => trim($_POST['date_debut']),
-        'date_fin' => trim($_POST['date_fin']),
-        'max_participants' => intval($_POST['max_participants'])
-    ];
-
-    if ($mode === 'add') {
-        if (EventController::handleAddEvent($data)) {
-            echo '<div class="alert alert-success">L\'événement a été ajouté avec succès !</div>';
-        } else {
-            echo '<div class="alert alert-danger">Une erreur est survenue lors de l\'ajout de l\'événement.</div>';
-        }
-    } elseif ($mode === 'edit') {
-        if (EventController::handleUpdateEvent($eventId, $data)) {
-            echo '<div class="alert alert-success">L\'événement a été modifié avec succès !</div>';
-        } else {
-            echo '<div class="alert alert-danger">Une erreur est survenue lors de la modification de l\'événement.</div>';
-        }
-    }
-}
-
-// Handle delete action
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $eventId = intval($_GET['id']);
-    if (EventController::handleDeleteEvent($eventId)) {
-        echo '<div class="alert alert-success">L\'événement a été supprimé avec succès !</div>';
-    } else {
-        echo '<div class="alert alert-danger">Une erreur est survenue lors de la suppression de l\'événement.</div>';
-    }
-}
-
-// Fetch all events for the table
-$events = EventController::getAllEvents();
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <!-- [Head] start -->
 
 <head>
-  <title>Evenements * GreenStart Connect Dashboard</title>
+  <title>Sample Page | Mantis Bootstrap 5 Admin Template</title>
   <!-- [Meta] -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -86,8 +26,6 @@ $events = EventController::getAllEvents();
 <!-- [Template CSS Files] -->
 <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" >
 <link rel="stylesheet" href="../assets/css/style-preset.css" >
-<!-- [Page specific CSS] start -->
-<link rel="stylesheet" href="../assets/css/plugins/datepicker-bs5.min.css">
 
 </head>
 <!-- [Head] end -->
@@ -107,7 +45,7 @@ $events = EventController::getAllEvents();
     <div class="m-header">
       <a href="../dashboard/index.html" class="b-brand text-primary">
         <!-- ========   Change your logo from here   ============ -->
-        <img src=""C:\Users\Asus\Desktop\1x\WAsset 6.png" class="img-fluid logo-lg" alt="logo">
+        <img src="../assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo">
       </a>
     </div>
     <div class="navbar-content">
@@ -158,12 +96,30 @@ $events = EventController::getAllEvents();
             <span class="pc-mtext">Register</span>
           </a>
         </li>
-        <li class="pc-item">
-            <a href="../pages/event.php" class="pc-link">
-              <span class="pc-micon"><i class="ti ti-planet"></i></span>
-              <span class="pc-mtext">Evenements</span>
-            </a>
-          </li>
+        <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link">
+            <span class="pc-icon"><i data-feather="calendar"></i></span>
+            <span class="pc-name">Événements</span>
+            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+          </a>
+          <ul class="pc-submenu">
+            <li class="pc-item">
+              <a class="pc-link" href="..\pages\eventList.php">Lister les événements</a>
+            </li>
+            <li class="pc-item">
+              <a class="pc-link" href="..\pages\eventForm.php">Ajouter un événement</a>
+            </li>
+            </li>
+            <li class="pc-item">
+              <a class="pc-link" href="..\pages\resList.php">Lister les réservations</a>
+            </li>
+            </li>
+            <li class="pc-item">
+              <a class="pc-link" href="C:\xampp\htdocs\GreenStartConnect\View\BackOffice\pages\resForm.php">Ajouter une réservation</a>
+            </li>
+          </ul>
+        </li>
+        
 
         <li class="pc-item pc-caption">
           <label>Other</label>
@@ -452,6 +408,9 @@ $events = EventController::getAllEvents();
  </div>
 </header>
 <!-- [ Header ] end -->
+
+
+
   <!-- [ Main Content ] start -->
   <div class="pc-container">
     <div class="pc-content">
@@ -461,245 +420,15 @@ $events = EventController::getAllEvents();
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h5 class="m-b-10">Evenements</h5>
+                <h5 class="m-b-10">Sample Page</h5>
               </div>
               <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Pages</a></li>
-                <li class="breadcrumb-item" aria-current="page">Evenements</li>
+                <li class="breadcrumb-item"><a href="javascript: void(0)">Other</a></li>
+                <li class="breadcrumb-item" aria-current="page">Sample Page</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
       <!-- [ breadcrumb ] end -->
-
-      <!-- [ Main Content ] start -->
-      <div class="row">
-        <!-- [ Form Validation ] start -->
-        <div class="col-sm-12">
-            <div class="card">
-            <body class="p-4">
-
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>Gestion des événements</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventModal">Ajouter un événement</button>
-    </div>
-
-    <!-- Tableau -->
-    <div class="card">
-        <div class="card-header">
-            Liste des événements
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered" id="eventsTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Titre</th>
-                        <th>Description</th>
-                        <th>Lieu</th>
-                        <th>Date début</th>
-                        <th>Date fin</th>
-                        <th>Participants max</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($events as $event): ?>
-                        <tr data-id="<?= $event['id_event'] ?>">
-                            <td><?= $event['id_event'] ?></td>
-                            <td><?= htmlspecialchars($event['titre_event']) ?></td>
-                            <td><?= htmlspecialchars($event['description_event']) ?></td>
-                            <td><?= htmlspecialchars($event['localisation']) ?></td>
-                            <td><?= htmlspecialchars($event['date_debut']) ?></td>
-                            <td><?= htmlspecialchars($event['date_fin']) ?></td>
-                            <td><?= htmlspecialchars($event['max_participants']) ?></td>
-                            <td>
-                                <button class="btn btn-warning btn-sm edit-event"
-                                    data-id="<?= $event['id_event'] ?>"
-                                    data-titre="<?= htmlspecialchars($event['titre_event']) ?>"
-                                    data-description="<?= htmlspecialchars($event['description_event']) ?>"
-                                    data-localisation="<?= htmlspecialchars($event['localisation']) ?>"
-                                    data-date_debut="<?= htmlspecialchars($event['date_debut']) ?>"
-                                    data-date_fin="<?= htmlspecialchars($event['date_fin']) ?>"
-                                    data-max_participants="<?= htmlspecialchars($event['max_participants']) ?>"
-                                    data-bs-toggle="modal" data-bs-target="#eventModal">
-                                    Modifier
-                                </button>
-                                <a href="?action=delete&id=<?= $event['id_event'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Confirmer la suppression ?')">Supprimer</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Form -->
-<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="eventForm">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="eventModalLabel">Ajouter un événement</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id_event" id="id_event">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Titre</label>
-                            <input type="text" class="form-control" name="titre_event" id="titre_event" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Lieu</label>
-                            <input type="text" class="form-control" name="localisation" id="localisation" required>
-                        </div>
-                        <div class="col-12 mb-3">
-                            <label class="form-label">Description</label>
-                            <textarea class="form-control" name="description_event" id="description_event" rows="2" required></textarea>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Date de début</label>
-                            <input type="datetime-local" class="form-control" name="date_debut" id="date_debut" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Date de fin</label>
-                            <input type="datetime-local" class="form-control" name="date_fin" id="date_fin" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Participants max</label>
-                            <input type="number" class="form-control" name="max_participants" id="max_participants" min="1" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Enregistrer</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const eventForm = document.getElementById('eventForm');
-    const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
-
-    // Form submit
-    eventForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const formData = new FormData(eventForm);
-
-        fetch('admin_events.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "created" || data.status === "updated") {
-                window.location.reload(); // recharge la page pour voir la mise à jour
-            }
-        });
-    });
-
-    // Edit buttons
-    document.querySelectorAll('.edit-event').forEach(button => {
-        button.addEventListener('click', function () {
-            document.getElementById('id_event').value = this.dataset.id;
-            document.getElementById('titre_event').value = this.dataset.titre;
-            document.getElementById('description_event').value = this.dataset.description;
-            document.getElementById('localisation').value = this.dataset.localisation;
-            document.getElementById('date_debut').value = this.dataset.date_debut;
-            document.getElementById('date_fin').value = this.dataset.date_fin;
-            document.getElementById('max_participants').value = this.dataset.max_participants;
-            document.getElementById('eventModalLabel').textContent = "Modifier un événement";
-        });
-    });
-
-    // Button "Ajouter"
-    document.querySelector('button[data-bs-target="#eventModal"]').addEventListener('click', function () {
-        eventForm.reset();
-        document.getElementById('id_event').value = '';
-        document.getElementById('eventModalLabel').textContent = "Ajouter un événement";
-    });
-});
-</script>
-
-</body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      <!-- [ Main Content ] end -->
-    </div>
-  </div>
-  <!-- [ Main Content ] end -->
-  <footer class="pc-footer">
-    <div class="footer-wrapper container-fluid">
-      <div class="row">
-        <div class="col-sm my-1">
-          <p class="m-0"
-            >GreenStart Connect &#9829; crafted by WeBoo 
-          
-        </div>
-        <div class="col-auto my-1">
-          <ul class="list-inline footer-link mb-0">
-            <li class="list-inline-item"><a href="../index.html">Home</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer> <!-- Required Js -->
-<script src="../assets/js/plugins/popper.min.js"></script>
-<script src="../assets/js/plugins/simplebar.min.js"></script>
-<script src="../assets/js/plugins/bootstrap.min.js"></script>
-<script src="../assets/js/fonts/custom-font.js"></script>
-<script src="../assets/js/pcoded.js"></script>
-<script src="../assets/js/plugins/feather.min.js"></script>
-
-
-
-
-
-<script>layout_change('light');</script>
-
-
-
-
-<script>change_box_container('false');</script>
-
-
-
-<script>layout_rtl_change('false');</script>
-
-
-<script>preset_change("preset-1");</script>
-
-
-<script>font_change("Public-Sans");</script>
-
-    
-
-  
-</body>
-<!-- [Body] end -->
-
-</html>

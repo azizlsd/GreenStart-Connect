@@ -1,19 +1,6 @@
 <?php
 require_once 'C:\xampp\htdocs\GreenStartConnect\Model\eventM.php';
 
-
-
-// Debugging: List all methods in the EventModel class
-if (class_exists('EventModel')) {
-    echo '<pre>';
-    print_r(get_class_methods('EventModel'));
-    echo '</pre>';
-} else {
-    die('Error: EventModel class not found.');
-}
-
-
-
 class EventController {
     // Fetch all events
     public static function getAllEvents() {
