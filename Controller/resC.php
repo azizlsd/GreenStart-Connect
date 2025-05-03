@@ -1,5 +1,5 @@
 <?php
-require_once 'C:\xampp\htdocs\GreenStartConnect\Model\resM.php'; // Adjust path to your model
+require_once 'C:\xampp\htdocs\GreenStartConnect\Model\resM.php';
 
 class ReservationController {
 
@@ -20,7 +20,7 @@ class ReservationController {
 
     // Update a reservation
     public static function handleUpdateReservation($id, $data) {
-        return ReservationModel::updateReservation($id, $data); // You would need to implement the update method in your model
+        return ReservationModel::updateReservation($id, $data);
     }
 
     // Delete a reservation

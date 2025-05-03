@@ -15,8 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     $data = [
         'id_event' => $_POST['id_event'],
         'id_user' => $_POST['id_user'],
-        'nom_user' => $_POST['nom_user']
+        'nom_user' => $_POST['nom_user'],
+        'accom_res' => isset($_POST['accom_res']) ? intval($_POST['accom_res']) : 0
     ];
+    
+
+    
 
     // Add the reservation using the ReservationController
     if (ReservationController::handleAddReservation($data)) {
@@ -102,6 +106,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
                 <label for="nom_user">Votre nom</label>
                 <input type="text" class="form-control" name="nom_user" id="nom_user" required>
             </div>
+            <div class="form-group">
+                <label for="accomp_res">Nombre d'accompagnants</label>
+                <input type="number" class="form-control" name="accomp_res" id="accomp_res" min="0" value="0" required>
+            </div>
+
             <input type="hidden" name="action" value="add"> <!-- Action to handle the reservation -->
 
             <br>

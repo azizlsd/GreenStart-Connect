@@ -97,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <td>
   <a href="eventForm.php?id=<?= $event['id_event'] ?>" class="btn btn-warning btn-sm">Modifier</a>
   <a href="?action=delete&id=<?= $event['id_event'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')">Supprimer</a>
+  <a href="resForm.php?id_event=<?= $event['id_event'] ?>" class="btn btn-success btn-sm">Réserver</a> <!-- New reserve button -->
 </td>
 
           </tr>

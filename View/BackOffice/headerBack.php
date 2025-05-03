@@ -3,7 +3,7 @@
 <!-- [Head] start -->
 
 <head>
-  <title>Sample Page | Mantis Bootstrap 5 Admin Template</title>
+  <title>Home | Mantis Bootstrap 5 Admin Template</title>
   <!-- [Meta] -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -115,7 +115,7 @@
             </li>
             </li>
             <li class="pc-item">
-              <a class="pc-link" href="C:\xampp\htdocs\GreenStartConnect\View\BackOffice\pages\resForm.php">Ajouter une réservation</a>
+              <a class="pc-link" href="..\pages\resForm.php">Ajouter une réservation</a>
             </li>
           </ul>
         </li>
@@ -420,12 +420,12 @@
           <div class="row align-items-center">
             <div class="col-md-12">
               <div class="page-header-title">
-                <h5 class="m-b-10">Sample Page</h5>
+                <h5 class="m-b-10">Home</h5>
               </div>
               <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Other</a></li>
-                <li class="breadcrumb-item" aria-current="page">Sample Page</li>
+                <li class="breadcrumb-item"><a href="javascript: void(0)">Dashboard</a></li>
+                <li class="breadcrumb-item" aria-current="page">Home</li>
               </ul>
             </div>
           </div>

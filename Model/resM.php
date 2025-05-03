@@ -7,13 +7,14 @@ class ReservationModel {
     public static function addReservation($data) {
         try {
             $pdo = config::getConnexion();
-            $query = "INSERT INTO reservations (id_event, id_user, nom_user) 
-                      VALUES (:id_event, :id_user, :nom_user)";
+            $query = "INSERT INTO reservations (id_event, id_user, nom_user, accom_res) 
+                      VALUES (:id_event, :id_user, :nom_user, :accom_res)";
             $stmt = $pdo->prepare($query);
             $stmt->execute([
                 ':id_event' => $data['id_event'],
                 ':id_user' => $data['id_user'],
-                ':nom_user' => $data['nom_user']
+                ':nom_user' => $data['nom_user'],
+                ':accom_res' => $data['accom_res']
             ]);
             return true;
         } catch (PDOException $e) {
@@ -53,13 +54,14 @@ class ReservationModel {
     public static function updateReservation($id, $data) {
         try {
             $pdo = config::getConnexion();
-            $query = "UPDATE reservations SET id_event = :id_event, id_user = :id_user, nom_user = :nom_user WHERE id_res = :id_res";
+            $query = "UPDATE reservations SET id_event = :id_event, id_user = :id_user, nom_user = :nom_user, accom_res = :accom_res WHERE id_res = :id_res";
             $stmt = $pdo->prepare($query);
             $stmt->execute([
                 ':id_res' => $id,
                 ':id_event' => $data['id_event'],
                 ':id_user' => $data['id_user'],
-                ':nom_user' => $data['nom_user']
+                ':nom_user' => $data['nom_user'],
+                ':accom_res' => $data['accom_res']
             ]);
             return true;
         } catch (PDOException $e) {
