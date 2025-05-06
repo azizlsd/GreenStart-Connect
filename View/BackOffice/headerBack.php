@@ -43,7 +43,7 @@
 <nav class="pc-sidebar">
   <div class="navbar-wrapper">
     <div class="m-header">
-      <a href="../dashboard/index.html" class="b-brand text-primary">
+      <a href="../dashboard/index.php" class="b-brand text-primary">
         <!-- ========   Change your logo from here   ============ -->
         <img src="../assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo">
       </a>
@@ -51,7 +51,7 @@
     <div class="navbar-content">
       <ul class="pc-navbar">
         <li class="pc-item">
-          <a href="../dashboard/index.html" class="pc-link">
+          <a href="../dashboard/index.php" class="pc-link">
             <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
             <span class="pc-mtext">Dashboard</span>
           </a>
@@ -97,28 +97,25 @@
           </a>
         </li>
         <li class="pc-item pc-hasmenu">
-          <a href="#!" class="pc-link">
-            <span class="pc-icon"><i data-feather="calendar"></i></span>
-            <span class="pc-name">Événements</span>
-            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-          </a>
-          <ul class="pc-submenu">
-            <li class="pc-item">
-              <a class="pc-link" href="..\pages\eventList.php">Lister les événements</a>
-            </li>
-            <li class="pc-item">
-              <a class="pc-link" href="..\pages\eventForm.php">Ajouter un événement</a>
-            </li>
-            </li>
-            <li class="pc-item">
-              <a class="pc-link" href="..\pages\resList.php">Lister les réservations</a>
-            </li>
-            </li>
-            <li class="pc-item">
-              <a class="pc-link" href="..\pages\resForm.php">Ajouter une réservation</a>
-            </li>
-          </ul>
-        </li>
+  <a href="#!" class="pc-link">
+    <span class="pc-icon"><i data-feather="calendar"></i></span>
+    <span class="pc-name">Événements & Résérvations</span>
+    <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+  </a>
+  <ul class="pc-submenu">
+    <li class="pc-item">
+      <a class="pc-link" href="..\pages\eventList.php">Lister les événements</a>
+    </li>
+    <li class="pc-item">
+      <a class="pc-link" href="..\pages\eventForm.php">Ajouter un événement</a>
+    </li>
+    <li class="pc-item">
+      <a class="pc-link" href="..\pages\resList.php">Lister les réservations</a>
+    </li>
+
+  </ul>
+</li>
+
         
 
         <li class="pc-item pc-caption">
@@ -423,7 +420,7 @@
                 <h5 class="m-b-10">Home</h5>
               </div>
               <ul class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="../dashboard/index.php">Home</a></li>
                 <li class="breadcrumb-item"><a href="javascript: void(0)">Dashboard</a></li>
                 <li class="breadcrumb-item" aria-current="page">Home</li>
               </ul>
@@ -432,3 +429,4 @@
         </div>
       </div>
       <!-- [ breadcrumb ] end -->
+       

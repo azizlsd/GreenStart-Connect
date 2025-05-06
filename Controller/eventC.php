@@ -2,9 +2,9 @@
 require_once 'C:\xampp\htdocs\GreenStartConnect\Model\eventM.php';
 
 class EventController {
-    // Fetch all events
-    public static function getAllEvents() {
-        return EventModel::getAllEvents(); // Ensure this matches the method name in EventModel
+    // Fetch all events with search and sort
+    public static function getAllEvents($searchTerm = '', $searchColumn = 'titre_event', $sortColumn = 'id_event', $sortOrder = 'asc') {
+        return EventModel::getAllEvents($searchTerm, $searchColumn, $sortColumn, $sortOrder);
     }
 
     // Fetch a single event by ID
@@ -26,5 +26,14 @@ class EventController {
     public static function handleDeleteEvent($id) {
         return EventModel::deleteEvent($id);
     }
+    public static function getUniqueParticipantsCount() {
+        return EventModel::getUniqueParticipantsCount(); // adjust class name if different
+    }
+    
+    public static function getMostPopularEvent() {
+        return EventModel::getMostPopularEvent();
+    }
+    
+        
 }
 ?>

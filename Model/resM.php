@@ -7,6 +7,8 @@ class ReservationModel {
     public static function addReservation($data) {
         try {
             $pdo = config::getConnexion();
+            $pdo->beginTransaction(); // Start transaction
+
             $query = "INSERT INTO reservations (id_event, id_user, nom_user, accom_res) 
                       VALUES (:id_event, :id_user, :nom_user, :accom_res)";
             $stmt = $pdo->prepare($query);
@@ -16,8 +18,18 @@ class ReservationModel {
                 ':nom_user' => $data['nom_user'],
                 ':accom_res' => $data['accom_res']
             ]);
-            return true;
+
+            if ($stmt->rowCount() > 0) {
+                $pdo->commit(); // Commit transaction if successful
+                error_log("Reservation added successfully.");
+                return true;
+            } else {
+                $pdo->rollBack(); // Rollback if no rows affected
+                error_log("No rows affected.");
+                return false;
+            }
         } catch (PDOException $e) {
+            $pdo->rollBack(); // Rollback in case of an error
             error_log('Database error: ' . $e->getMessage());
             return false;
         }

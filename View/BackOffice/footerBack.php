@@ -8,7 +8,7 @@
         </div>
         <div class="col-auto my-1">
           <ul class="list-inline footer-link mb-0">
-            <li class="list-inline-item"><a href="../index.html">Home</a></li>
+            <li class="list-inline-item"><a href="../index.php">Home</a></li>
           </ul>
         </div>
       </div>
@@ -26,6 +26,11 @@
   <script src="Extra\ExtraBack\assets/js/fonts/custom-font.js"></script>
   <script src="Extra\ExtraBack\assets/js/pcoded.js"></script>
   <script src="Extra\ExtraBack\assets/js/plugins/feather.min.js"></script>
+
+
+  <script>
+    feather.replace();
+  </script>
 
   
   

@@ -2,13 +2,21 @@
 require_once 'C:\xampp\htdocs\GreenStartConnect\config.php';
 
 class EventModel {
-    // Fetch all events
-    public static function getAllEvents() {
+    // Fetch all events with search and sort
+    public static function getAllEvents($searchTerm = '', $searchColumn = 'titre_event', $sortColumn = 'id_event', $sortOrder = 'asc') {
         try {
             $pdo = config::getConnexion();
-            $query = "SELECT id_event, titre_event, description_event, localisation, date_debut, date_fin, max_participants FROM events ORDER BY date_debut DESC";
+
+            // Build the SQL query with dynamic search and sorting
+            $query = "SELECT id_event, titre_event, description_event, localisation, date_debut, date_fin, max_participants 
+                      FROM events 
+                      WHERE $searchColumn LIKE :searchTerm
+                      ORDER BY $sortColumn $sortOrder";
+
+            // Prepare and execute the query
             $stmt = $pdo->prepare($query);
-            $stmt->execute();
+            $stmt->execute([':searchTerm' => '%' . $searchTerm . '%']);
+            
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log('Database error: ' . $e->getMessage());
@@ -94,5 +102,33 @@ class EventModel {
             return false;
         }
     }
+    public static function getUniqueParticipantsCount() {
+        $db = config::getConnexion();
+        try {
+            $query = $db->query("SELECT COUNT(DISTINCT id_user) as total FROM reservations");
+            $result = $query->fetch();
+            return $result['total'];
+        } catch (PDOException $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+    public static function getMostPopularEvent() {
+        $db = config::getConnexion();
+        try {
+            $sql = "
+                SELECT e.titre_event, COUNT(r.id_res) AS total_reservations
+                FROM events e
+                JOIN reservations r ON e.id_event = r.id_event
+                GROUP BY e.id_event
+                ORDER BY total_reservations DESC
+                LIMIT 1
+            ";
+            $query = $db->query($sql);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            die('Erreur : ' . $e->getMessage());
+        }
+    }
+        
 }
 ?>
