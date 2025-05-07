@@ -95,5 +95,37 @@ class ReservationModel {
             return false;
         }
     }
+
+    public static function getFilteredReservations($search = '', $searchColumn = 'nom_user', $sort = 'id_res', $order = 'ASC')
+    {
+        $allowedColumns = ['id_res', 'id_event', 'id_user', 'nom_user', 'accom_res'];
+        if (!in_array($searchColumn, $allowedColumns)) {
+            $searchColumn = 'nom_user';
+        }
+        if (!in_array($sort, $allowedColumns)) {
+            $sort = 'id_res';
+        }
+
+        try {
+            $pdo = config::getConnexion();
+
+            $sql = "SELECT * FROM reservations";
+            $params = [];
+
+            if (!empty($search)) {
+                $sql .= " WHERE $searchColumn LIKE :search";
+                $params[':search'] = '%' . $search . '%';
+            }
+
+            $sql .= " ORDER BY $sort $order";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error fetching reservations: " . $e->getMessage());
+            return [];
+        }
+    }
 }
 ?>

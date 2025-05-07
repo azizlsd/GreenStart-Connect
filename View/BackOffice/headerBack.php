@@ -27,6 +27,16 @@
 <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" >
 <link rel="stylesheet" href="../assets/css/style-preset.css" >
 
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44c=" crossorigin=""/>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1jRfC6qu7vl0QBEH3M0z5ek+dM/2SxCWU3uD3+gk=" crossorigin=""></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
 </head>
 <!-- [Head] end -->
 <!-- [Body] Start -->
@@ -112,7 +122,9 @@
     <li class="pc-item">
       <a class="pc-link" href="..\pages\resList.php">Lister les réservations</a>
     </li>
-
+    <li class="pc-item">
+      <a class="pc-link" href="..\pages\resForm.php">Ajouter une réservation</a>
+    </li>
   </ul>
 </li>
 

@@ -63,12 +63,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'accom_res' => $_POST['accom_res']
     ];
 
+    // Add reservation ID for modification if it exists
+    if (isset($_POST['id_res'])) {
+        $data['id_res'] = $_POST['id_res'];
+    }
+
     $errors = validateReservationData($data);
 
     // If no errors, proceed to add or modify the reservation
     if (empty($errors)) {
-        if (empty($data['id_user'])) {
-            // No user ID -> Add reservation
+        if (empty($data['id_res'])) {
+            // No reservation ID -> Add reservation
             ReservationController::handleAddReservation($data);
         } else {
             // Reservation ID exists -> Modify reservation
@@ -93,6 +98,9 @@ require_once 'C:\xampp\htdocs\GreenStartConnect\View\BackOffice\headerBack.php';
         <div class="card-body">
             <form method="POST" action="" class="needs-validation" novalidate>
                 <input type="hidden" name="id_event" value="<?= $eventId ?>"> <!-- Hidden event ID -->
+                <?php if (!empty($reservation['id_res'])): ?>
+                    <input type="hidden" name="id_res" value="<?= htmlspecialchars($reservation['id_res']) ?>"> <!-- Hidden reservation ID -->
+                <?php endif; ?>
                 <div class="row">
                     <div class="col-md-6">
                         <!-- Nom utilisateur -->

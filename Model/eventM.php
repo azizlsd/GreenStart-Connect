@@ -1,44 +1,36 @@
 <?php
-require_once 'C:\xampp\htdocs\GreenStartConnect\config.php';
+require_once dirname(__DIR__) . '/config.php';
 
 class EventModel {
-    // Fetch all events with search and sort
-    public static function getAllEvents($searchTerm = '', $searchColumn = 'titre_event', $sortColumn = 'id_event', $sortOrder = 'asc') {
+    public static function getAllEvents($searchTerm, $searchColumn, $sortColumn, $sortOrder) {
         try {
             $pdo = config::getConnexion();
-
-            // Build the SQL query with dynamic search and sorting
-            $query = "SELECT id_event, titre_event, description_event, localisation, date_debut, date_fin, max_participants 
-                      FROM events 
-                      WHERE $searchColumn LIKE :searchTerm
-                      ORDER BY $sortColumn $sortOrder";
-
-            // Prepare and execute the query
+            $query = "SELECT * FROM events WHERE $searchColumn LIKE :searchTerm ORDER BY $sortColumn $sortOrder";
             $stmt = $pdo->prepare($query);
             $stmt->execute([':searchTerm' => '%' . $searchTerm . '%']);
-            
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log('Database error: ' . $e->getMessage());
-            return [];
+            error_log('Get all events error: ' . $e->getMessage());
+            throw new Exception('Erreur lors de la récupération des événements.');
         }
     }
 
-    // Fetch a single event by ID
     public static function getEventById($id) {
         try {
             $pdo = config::getConnexion();
-            $query = "SELECT * FROM events WHERE id_event = :id_event";
-            $stmt = $pdo->prepare($query);
-            $stmt->execute([':id_event' => $id]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt = $pdo->prepare("SELECT * FROM events WHERE id_event = :id_event");
+            $stmt->execute([':id_event' => $id]); // Fixed: removed 'schm'
+            $event = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$event) {
+                throw new Exception('Événement non trouvé.');
+            }
+            return $event;
         } catch (PDOException $e) {
-            error_log('Database error: ' . $e->getMessage());
-            return null;
+            error_log('Get event by ID error: ' . $e->getMessage());
+            throw new Exception('Erreur lors de la récupération de l\'événement.');
         }
     }
 
-    // Add a new event
     public static function addEvent($data) {
         try {
             $pdo = config::getConnexion();
@@ -55,22 +47,21 @@ class EventModel {
             ]);
             return true;
         } catch (PDOException $e) {
-            error_log('Database error: ' . $e->getMessage());
-            return false;
+            error_log('Add event error: ' . $e->getMessage());
+            throw new Exception('Erreur lors de l\'ajout de l\'événement.');
         }
     }
 
-    // Update an existing event
     public static function updateEvent($id, $data) {
         try {
             $pdo = config::getConnexion();
             $query = "UPDATE events SET 
-                          titre_event = :titre_event, 
-                          description_event = :description_event, 
-                          localisation = :localisation, 
-                          date_debut = :date_debut, 
-                          date_fin = :date_fin, 
-                          max_participants = :max_participants 
+                      titre_event = :titre_event,
+                      description_event = :description_event,
+                      localisation = :localisation,
+                      date_debut = :date_debut,
+                      date_fin = :date_fin,
+                      max_participants = :max_participants
                       WHERE id_event = :id_event";
             $stmt = $pdo->prepare($query);
             $stmt->execute([
@@ -84,51 +75,52 @@ class EventModel {
             ]);
             return true;
         } catch (PDOException $e) {
-            error_log('Database error: ' . $e->getMessage());
-            return false;
+            error_log('Update event error: ' . $e->getMessage());
+            throw new Exception('Erreur lors de la mise à jour de l\'événement.');
         }
     }
 
-    // Delete an event
     public static function deleteEvent($id) {
         try {
             $pdo = config::getConnexion();
-            $query = "DELETE FROM events WHERE id_event = :id_event";
-            $stmt = $pdo->prepare($query);
+            $stmt = $pdo->prepare("DELETE FROM events WHERE id_event = :id_event");
             $stmt->execute([':id_event' => $id]);
             return true;
         } catch (PDOException $e) {
-            error_log('Database error: ' . $e->getMessage());
-            return false;
+            error_log('Delete event error: ' . $e->getMessage());
+            throw new Exception('Erreur lors de la suppression de l\'événement.');
         }
     }
+
     public static function getUniqueParticipantsCount() {
-        $db = config::getConnexion();
         try {
-            $query = $db->query("SELECT COUNT(DISTINCT id_user) as total FROM reservations");
-            $result = $query->fetch();
-            return $result['total'];
+            $pdo = config::getConnexion();
+            $stmt = $pdo->prepare("SELECT COUNT(DISTINCT id_user) as count FROM reservations");
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC)['count'];
         } catch (PDOException $e) {
-            die('Erreur : ' . $e->getMessage());
+            error_log('Get unique participants error: ' . $e->getMessage());
+            throw new Exception('Erreur lors de la récupération du nombre de participants.');
         }
     }
+
     public static function getMostPopularEvent() {
-        $db = config::getConnexion();
         try {
-            $sql = "
-                SELECT e.titre_event, COUNT(r.id_res) AS total_reservations
+            $pdo = config::getConnexion();
+            $stmt = $pdo->prepare("
+                SELECT e.titre_event, COUNT(r.id_user) as participant_count
                 FROM events e
-                JOIN reservations r ON e.id_event = r.id_event
-                GROUP BY e.id_event
-                ORDER BY total_reservations DESC
+                LEFT JOIN reservations r ON e.id_event = r.id_event
+                GROUP BY e.id_event, e.titre_event
+                ORDER BY participant_count DESC
                 LIMIT 1
-            ";
-            $query = $db->query($sql);
-            return $query->fetch();
+            ");
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            die('Erreur : ' . $e->getMessage());
+            error_log('Get most popular event error: ' . $e->getMessage());
+            throw new Exception('Erreur lors de la récupération de l\'événement le plus populaire.');
         }
     }
-        
 }
 ?>
