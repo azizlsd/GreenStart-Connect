@@ -1,8 +1,15 @@
 <?php
-
 class config
 {
     private static $pdo = null;
+
+    public static $smtp_config = [
+        'host' => 'smtp.gmail.com',
+        'username' => 'noreply.gsconnect@gmail.com', // Sender email
+        'password' => 'GSConnect123', // Replace with Gmail App Password (e.g., abcd efgh ijkl mnop)
+        'port' => 587,
+        'admin_email' => 'mouhmaedaziz.boulifi@esprit.tn' // Receiver email
+    ];
 
     public static function getConnexion()
     {
@@ -25,3 +32,4 @@ class config
         return self::$pdo;
     }
 }
+?>

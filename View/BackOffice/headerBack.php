@@ -125,6 +125,10 @@
     <li class="pc-item">
       <a class="pc-link" href="..\pages\resForm.php">Ajouter une réservation</a>
     </li>
+    </li>
+    <li class="pc-item">
+      <a class="pc-link" href="..\pages\stats.php">Statistiques</a>
+    </li>
   </ul>
 </li>
 

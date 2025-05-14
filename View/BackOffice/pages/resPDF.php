@@ -1,86 +1,91 @@
 <?php
-require_once 'C:\xampp\htdocs\GreenStartConnect\config.php'; // Database connection
-require_once 'C:\xampp\htdocs\GreenStartConnect\Controller\resC.php'; // ReservationController
-require_once 'C:\xampp\htdocs\GreenStartConnect\fpdf\fpdf.php'; // FPDF library
+require_once 'C:\xampp\htdocs\GreenStartConnect\config.php';
+require_once 'C:\xampp\htdocs\GreenStartConnect\Controller\resC.php';
+require_once 'C:\xampp\htdocs\GreenStartConnect\fpdf\fpdf.php';
 
-// Start output buffering to prevent headers already sent errors
 ob_start();
 
 class PDF extends FPDF
 {
     function Header()
     {
-        $this->SetFont('Arial', 'B', 14);
-        $this->Cell(0, 10, 'Liste des Réservations', 0, 1, 'C');
+        // Logo (optionnel)
+        if (file_exists('C:\xampp\htdocs\GreenStartConnect\images\logo.png')) {
+            $this->Image('C:\xampp\htdocs\GreenStartConnect\images\logo.png', 10, 6, 30);
+        }
+
+        // Titre
+        $this->SetFont('Arial', 'B', 16);
+        $this->Cell(0, 10, utf8_decode('GreenStartConnect - Liste des Réservations'), 0, 1, 'C');
+
+        // Date
+        $this->SetFont('Arial', '', 10);
+        $this->Cell(0, 10, 'Exporté le : ' . date('d/m/Y H:i'), 0, 1, 'C');
+
         $this->Ln(5);
     }
 
     function Footer()
     {
-        $this->SetY(-15);
+        $this->SetY(-20);
         $this->SetFont('Arial', 'I', 8);
-        $this->Cell(0, 10, 'Page ' . $this->PageNo() . '/{nb}', 0, 0, 'C');
+        $this->SetTextColor(128);
+        $this->Cell(0, 10, utf8_decode('Page ') . $this->PageNo() . '/{nb}', 0, 0, 'C');
+        $this->Ln(5);
+        $this->Cell(0, 10, utf8_decode('GreenStartConnect - Système de Réservations'), 0, 0, 'C');
     }
 
     function ReservationTable($header, $data)
     {
-        // Adjusted cell widths for landscape A4 (297mm wide)
-        $widths = [40, 40, 60, 40]; // Total: 180mm (leaving margins)
-        $this->SetFont('Arial', 'B', 10);
+        $widths = [50, 50, 100, 40]; // Colonnes ajustées
+        $this->SetFont('Arial', 'B', 11);
+        $this->SetFillColor(52, 152, 219); // Bleu clair
+        $this->SetTextColor(255); // Blanc
+        $this->SetDrawColor(41, 128, 185);
+
         foreach ($header as $i => $col) {
-            $this->Cell($widths[$i], 7, $col, 1);
+            $this->Cell($widths[$i], 8, utf8_decode($col), 1, 0, 'C', true);
         }
         $this->Ln();
 
-        $this->SetFont('Arial', '', 9);
+        $this->SetFont('Arial', '', 10);
+        $this->SetTextColor(0);
+        $fill = false;
+
         foreach ($data as $row) {
-            $this->Cell($widths[0], 6, $row['id_event'], 1);
-            $this->Cell($widths[1], 6, $row['id_user'], 1);
-            $this->Cell($widths[2], 6, utf8_decode($row['nom_user']), 1);
-            $this->Cell($widths[3], 6, $row['accom_res'], 1);
+            $this->SetFillColor(245, 245, 245); // Gris clair pour alternance
+            $this->Cell($widths[0], 8, $row['id_event'], 1, 0, 'C', $fill);
+            $this->Cell($widths[1], 8, $row['id_user'], 1, 0, 'C', $fill);
+            $this->Cell($widths[2], 8, utf8_decode($row['nom_user']), 1, 0, 'L', $fill);
+            $this->Cell($widths[3], 8, $row['accom_res'], 1, 0, 'C', $fill);
             $this->Ln();
+            $fill = !$fill;
         }
     }
 }
 
-// Get search and sort parameters
+// Sécurisation des paramètres
 $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
-$searchColumn = isset($_GET['searchColumn']) ? $_GET['searchColumn'] : 'nom_user';
-$sortColumn = isset($_GET['sort']) ? $_GET['sort'] : 'id_res';
-$sortOrder = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'desc' : 'asc';
+$searchColumn = in_array($_GET['searchColumn'] ?? '', ['nom_user', 'id_user', 'id_event']) ? $_GET['searchColumn'] : 'nom_user';
+$sortColumn = in_array($_GET['sort'] ?? '', ['id_event', 'id_user', 'nom_user', 'accom_res', 'id_res']) ? $_GET['sort'] : 'id_res';
+$sortOrder = ($_GET['order'] ?? '') === 'desc' ? 'desc' : 'asc';
 
-// Validate search/sort columns to prevent SQL injection
-$allowedColumns = ['nom_user', 'id_user', 'id_event'];
-if (!in_array($searchColumn, $allowedColumns)) {
-    $searchColumn = 'nom_user';
-}
-$allowedSortColumns = ['id_event', 'id_user', 'nom_user', 'accom_res', 'id_res'];
-if (!in_array($sortColumn, $allowedSortColumns)) {
-    $sortColumn = 'id_res';
-}
-
-// Fetch reservations using ReservationController
+// Récupération des données
 $reservations = ReservationController::getFilteredReservations($searchTerm, $searchColumn, $sortColumn, $sortOrder);
 
-// Check if reservations exist
-if (empty($reservations)) {
-    $pdf = new PDF();
-    $pdf->AddPage('L');
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(0, 10, 'Aucune réservation à afficher.', 0, 1, 'C');
-    $pdf->Output('D', 'liste_reservations.pdf');
-    ob_end_clean();
-    exit;
-}
-
-// Create PDF
+// Création PDF
 $pdf = new PDF();
 $pdf->AliasNbPages();
-$pdf->AddPage('L'); // Landscape orientation
+$pdf->AddPage('L'); // Landscape
 $header = ['ID Événement', 'ID Utilisateur', 'Nom Utilisateur', 'Accompagnants'];
-$pdf->ReservationTable($header, $reservations);
 
-// Clean output buffer and output PDF
+if (empty($reservations)) {
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->Cell(0, 10, utf8_decode('Aucune réservation trouvée.'), 0, 1, 'C');
+} else {
+    $pdf->ReservationTable($header, $reservations);
+}
+
 ob_end_clean();
 $pdf->Output('D', 'liste_reservations.pdf');
 exit;
